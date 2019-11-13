@@ -1,0 +1,6 @@
+[package]
+name = "rbac"
+version = "0.1.0"
+authors = ["Carl Scherer"]
+
+[dependencies]
