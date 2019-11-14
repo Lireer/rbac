@@ -1,9 +1,9 @@
 // #![warn(missing_docs)]
 //! A crate providing role based access control.
 
-use std::hash::Hash;
-use std::collections::{HashMap, HashSet};
 use std::collections::hash_map::Entry;
+use std::collections::{HashMap, HashSet};
+use std::hash::Hash;
 
 /// The Identifiable trait needs to be implemented for the types that are used with `RbacModel`
 /// and `RbacModelIterators`.
@@ -56,7 +56,7 @@ pub trait Identifiable {
 /// A trait for providing methods for iterating over roles and permissions.
 /// # Example
 /// Implementing RbacModelIterators for your type:
-/// 
+///
 /// ```
 /// # use std::hash::Hash;
 /// # use std::collections::{HashMap, HashSet};
@@ -87,14 +87,14 @@ pub trait Identifiable {
 ///     type UserRolesIterator = std::iter::Cloned<std::collections::hash_set::Iter<'a, R::Id>>;
 ///     type RolePermissionsIterator = std::iter::Cloned<std::collections::hash_set::Iter<'a, P::Id>>;
 ///     type Error = InMemoryRbacError;
-/// 
+///
 ///     fn iter_user_role_ids(self, user: &U) -> Result<Self::UserRolesIterator, Self::Error> {
 ///         match self.data_user_roles.get(&user.get_rbac_id()) {
 ///             Some(val) => Ok(val.iter().cloned()),
 ///             None => Err(InMemoryRbacError::UserHasNoRoles),
 ///         }
 ///     }
-/// 
+///
 ///     fn iter_role_permission_ids(
 ///         self,
 ///         role: &R,
@@ -229,7 +229,10 @@ where
     type Error = InMemoryRbacError;
 
     fn assign_role(&mut self, user: &U, role: &R) -> Result<bool, Self::Error> {
-        let entry = self.data_user_roles.entry(user.get_rbac_id()).or_insert_with(HashSet::new);
+        let entry = self
+            .data_user_roles
+            .entry(user.get_rbac_id())
+            .or_insert_with(HashSet::new);
 
         Ok(entry.insert(role.get_rbac_id()))
     }
@@ -248,8 +251,10 @@ where
     }
 
     fn add_permission(&mut self, role: &R, permission: &P) -> Result<bool, Self::Error> {
-        let entry = self.data_role_permissions.entry(role.get_rbac_id())
-                                                         .or_insert_with(HashSet::new);
+        let entry = self
+            .data_role_permissions
+            .entry(role.get_rbac_id())
+            .or_insert_with(HashSet::new);
         Ok(entry.insert(permission.get_rbac_id()))
     }
 
@@ -268,17 +273,14 @@ where
 
     fn user_has_permission(&self, user: &U, permission: &P) -> Result<bool, Self::Error> {
         match self.data_user_roles.get(&user.get_rbac_id()) {
-            Some(val) => Ok(
-                val.iter().any(|r| match self.data_role_permissions.get(r) {
-                    Some(val) => val.contains(&permission.get_rbac_id()),
-                    None => false
-                })
-            ),
-            None => Ok(false)
+            Some(val) => Ok(val.iter().any(|r| match self.data_role_permissions.get(r) {
+                Some(val) => val.contains(&permission.get_rbac_id()),
+                None => false,
+            })),
+            None => Ok(false),
         }
     }
 }
-
 
 #[derive(Debug, PartialEq)]
 /// Possible errors that can occur when using the `InMemoryRbac` struct.

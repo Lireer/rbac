@@ -43,15 +43,17 @@ impl Identifiable for MyPermission {
     }
 }
 
-
 // marc is administrator
 // carl is supervisor
 // hans is agent and salesperson
 // fred is salesperson
 // george has no role
-fn test_environment()
-    -> (InMemoryRbac<MyUser, MyRole, MyPermission>, Vec<MyUser>, Vec<MyRole>, Vec<MyPermission>)
-{
+fn test_environment() -> (
+    InMemoryRbac<MyUser, MyRole, MyPermission>,
+    Vec<MyUser>,
+    Vec<MyRole>,
+    Vec<MyPermission>,
+) {
     let mut memory: InMemoryRbac<MyUser, MyRole, MyPermission> = InMemoryRbac::new();
 
     let marc = MyUser { id: 10 };
