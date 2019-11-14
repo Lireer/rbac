@@ -181,6 +181,7 @@ where
     R::Id: Eq + Hash,
     P::Id: Eq + Hash,
 {
+    #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
         InMemoryRbac {
             data_user_roles: HashMap::new(),
