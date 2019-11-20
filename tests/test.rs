@@ -43,11 +43,11 @@ impl Identifiable for MyPermission {
     }
 }
 
-// marc is administrator
-// carl is supervisor
-// hans is agent and salesperson
-// fred is salesperson
-// george has no role
+// gandalf is administrator
+// elrond is supervisor
+// sam is agent and salesperson
+// legolas is salesperson
+// frodo has no role
 fn test_environment() -> (
     InMemoryRbac<MyUser, MyRole, MyPermission>,
     Vec<MyUser>,
@@ -56,11 +56,11 @@ fn test_environment() -> (
 ) {
     let mut memory: InMemoryRbac<MyUser, MyRole, MyPermission> = InMemoryRbac::new();
 
-    let marc = MyUser { id: 10 };
-    let carl = MyUser { id: 11 };
-    let hans = MyUser { id: 12 };
-    let fred = MyUser { id: 13 };
-    let george = MyUser { id: 14 };
+    let gandalf = MyUser { id: 10 };
+    let elrond = MyUser { id: 11 };
+    let sam = MyUser { id: 12 };
+    let legolas = MyUser { id: 13 };
+    let frodo = MyUser { id: 14 };
 
     let agent = MyRole { id: 110 };
     let salesperson = MyRole { id: 111 };
@@ -73,11 +73,11 @@ fn test_environment() -> (
     let alter_state = MyPermission { id: 213 };
     let unlimited_lookups = MyPermission { id: 214 };
 
-    memory.assign_role(&marc, &administrator).unwrap();
-    memory.assign_role(&carl, &supervisor).unwrap();
-    memory.assign_role(&hans, &agent).unwrap();
-    memory.assign_role(&hans, &salesperson).unwrap();
-    memory.assign_role(&fred, &salesperson).unwrap();
+    memory.assign_role(&gandalf, &administrator).unwrap();
+    memory.assign_role(&elrond, &supervisor).unwrap();
+    memory.assign_role(&sam, &agent).unwrap();
+    memory.assign_role(&sam, &salesperson).unwrap();
+    memory.assign_role(&legolas, &salesperson).unwrap();
 
     memory.add_permission(&agent, &make_calls).unwrap();
     memory.add_permission(&agent, &enter_information).unwrap();
@@ -89,7 +89,7 @@ fn test_environment() -> (
     memory.add_permission(&supervisor, &generate_form).unwrap();
     memory.add_permission(&supervisor, &alter_state).unwrap();
 
-    let users = vec![marc, carl, hans, fred, george];
+    let users = vec![gandalf, elrond, sam, legolas, frodo];
     let roles = vec![agent, salesperson, supervisor, administrator];
     let permissions = vec![
         make_calls,
