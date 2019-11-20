@@ -171,8 +171,8 @@ where
     R::Id: Eq + Hash,
     P::Id: Eq + Hash,
 {
-    data_user_roles: HashMap<U::Id, HashSet<R::Id>>,
-    data_role_permissions: HashMap<R::Id, HashSet<P::Id>>,
+    user_role_map: HashMap<U::Id, HashSet<R::Id>>,
+    role_permisson_map: HashMap<R::Id, HashSet<P::Id>>,
 }
 
 impl<U: Identifiable, R: Identifiable, P: Identifiable> InMemoryRbac<U, R, P>
@@ -184,8 +184,8 @@ where
     #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
         InMemoryRbac {
-            data_user_roles: HashMap::new(),
-            data_role_permissions: HashMap::new(),
+            user_role_map: HashMap::new(),
+            role_permisson_map: HashMap::new(),
         }
     }
 }
@@ -204,7 +204,7 @@ where
     type Error = InMemoryRbacError;
 
     fn iter_user_role_ids(self, user: &U) -> Result<Self::UserRolesIterator, Self::Error> {
-        match self.data_user_roles.get(&user.get_rbac_id()) {
+        match self.user_role_map.get(&user.get_rbac_id()) {
             Some(val) => Ok(val.iter().cloned()),
             None => Err(InMemoryRbacError::UserHasNoRoles),
         }
@@ -214,7 +214,7 @@ where
         self,
         role: &R,
     ) -> Result<Self::RolePermissionsIterator, Self::Error> {
-        match self.data_role_permissions.get(&role.get_rbac_id()) {
+        match self.role_permisson_map.get(&role.get_rbac_id()) {
             Some(val) => Ok(val.iter().cloned()),
             None => Err(InMemoryRbacError::RoleHasNoPermissions),
         }
@@ -231,7 +231,7 @@ where
 
     fn assign_role(&mut self, user: &U, role: &R) -> Result<bool, Self::Error> {
         let entry = self
-            .data_user_roles
+            .user_role_map
             .entry(user.get_rbac_id())
             .or_insert_with(HashSet::new);
 
@@ -239,7 +239,7 @@ where
     }
 
     fn unassign_role(&mut self, user: &U, role: &R) -> Result<bool, Self::Error> {
-        match self.data_user_roles.entry(user.get_rbac_id()) {
+        match self.user_role_map.entry(user.get_rbac_id()) {
             Entry::Occupied(mut val) => {
                 let was_present = val.get_mut().remove(&role.get_rbac_id());
                 if val.get().is_empty() {
@@ -253,14 +253,14 @@ where
 
     fn add_permission(&mut self, role: &R, permission: &P) -> Result<bool, Self::Error> {
         let entry = self
-            .data_role_permissions
+            .role_permisson_map
             .entry(role.get_rbac_id())
             .or_insert_with(HashSet::new);
         Ok(entry.insert(permission.get_rbac_id()))
     }
 
     fn remove_permission(&mut self, role: &R, permission: &P) -> Result<bool, Self::Error> {
-        match self.data_role_permissions.entry(role.get_rbac_id()) {
+        match self.role_permisson_map.entry(role.get_rbac_id()) {
             Entry::Occupied(mut val) => {
                 let was_present = val.get_mut().remove(&permission.get_rbac_id());
                 if val.get().is_empty() {
@@ -273,8 +273,8 @@ where
     }
 
     fn user_has_permission(&self, user: &U, permission: &P) -> Result<bool, Self::Error> {
-        match self.data_user_roles.get(&user.get_rbac_id()) {
-            Some(val) => Ok(val.iter().any(|r| match self.data_role_permissions.get(r) {
+        match self.user_role_map.get(&user.get_rbac_id()) {
+            Some(val) => Ok(val.iter().any(|r| match self.role_permisson_map.get(r) {
                 Some(val) => val.contains(&permission.get_rbac_id()),
                 None => false,
             })),
