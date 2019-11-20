@@ -4,7 +4,7 @@
 /// Implementing Identifiable for your type:
 ///
 /// ```
-/// use rbac::Identifiable;
+/// use rbac::traits::Identifiable;
 ///
 /// struct MyRole {
 ///     id: u32,
@@ -25,7 +25,7 @@ pub trait Identifiable {
     /// Gets the `Id` of `self`.
     /// # Examples
     /// ```
-    /// # use rbac::Identifiable;
+    /// # use rbac::traits::Identifiable;
     /// #
     /// # struct MyRole {
     /// #     id: u32,
@@ -54,9 +54,9 @@ pub trait Identifiable {
 /// # use std::hash::Hash;
 /// # use std::collections::{HashMap, HashSet};
 /// #
-/// # use rbac::Identifiable;
+/// # use rbac::traits::Identifiable;
 /// # use rbac::InMemoryRbacError;
-/// # use rbac::RbacModelIterators;
+/// # use rbac::traits::RbacModelIterators;
 /// #
 /// # pub struct InMemoryRbac<U: Identifiable, R: Identifiable, P: Identifiable>
 /// # where
