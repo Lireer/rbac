@@ -77,11 +77,11 @@ pub trait Identifiable {
 ///     P: Identifiable,
 ///     P::Id: Eq + Hash + Clone,
 /// {
-///     type UserRolesIterator = std::iter::Cloned<std::collections::hash_set::Iter<'a, R::Id>>;
-///     type RolePermissionsIterator = std::iter::Cloned<std::collections::hash_set::Iter<'a, P::Id>>;
+///     type UserRoles = std::iter::Cloned<std::collections::hash_set::Iter<'a, R::Id>>;
+///     type RolePermissions = std::iter::Cloned<std::collections::hash_set::Iter<'a, P::Id>>;
 ///     type Error = InMemoryRbacError;
 ///
-///     fn iter_user_role_ids(self, user: &U) -> Result<Self::UserRolesIterator, Self::Error> {
+///     fn iter_user_role_ids(self, user: &U) -> Result<Self::UserRoles, Self::Error> {
 ///         match self.user_role_map.get(&user.get_rbac_id()) {
 ///             Some(val) => Ok(val.iter().cloned()),
 ///             None => Err(InMemoryRbacError::UserHasNoRoles),
@@ -91,7 +91,7 @@ pub trait Identifiable {
 ///     fn iter_role_permission_ids(
 ///         self,
 ///         role: &R,
-///     ) -> Result<Self::RolePermissionsIterator, Self::Error> {
+///     ) -> Result<Self::RolePermissions, Self::Error> {
 ///         match self.role_permisson_map.get(&role.get_rbac_id()) {
 ///             Some(val) => Ok(val.iter().cloned()),
 ///             None => Err(InMemoryRbacError::RoleHasNoPermissions),
@@ -108,24 +108,21 @@ where
     /// The type of the errors that can happen when using this trait.
     type Error;
     /// The type of the iterator containing the roles of a user.
-    type UserRolesIterator: Iterator<Item = R::Id>;
+    type UserRoles: Iterator<Item = R::Id>;
     /// The type of the iterator containing the permissions of a role.
-    type RolePermissionsIterator: Iterator<Item = P::Id>;
+    type RolePermissions: Iterator<Item = P::Id>;
 
     /// Creates an iterator over the `Id`s of the roles of a user.
     ///
     /// If an error occurs, possibly because of a connection problem to a database,
     /// `Self::Error` is returned in the result.
-    fn iter_user_role_ids(self, user: &U) -> Result<Self::UserRolesIterator, Self::Error>;
+    fn iter_user_role_ids(self, user: &U) -> Result<Self::UserRoles, Self::Error>;
 
     /// Creates an iterator over the `Id`s of the permissions of a role.
     ///
     /// If an error occurs, possibly because of a connection problem to a database,
     /// `Self::Error` is returned in the result.
-    fn iter_role_permission_ids(
-        self,
-        role: &R,
-    ) -> Result<Self::RolePermissionsIterator, Self::Error>;
+    fn iter_role_permission_ids(self, role: &R) -> Result<Self::RolePermissions, Self::Error>;
 }
 
 pub trait RbacModel<U, R, P>

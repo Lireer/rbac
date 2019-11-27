@@ -43,21 +43,18 @@ where
     P: Identifiable,
     P::Id: Eq + Hash + Clone,
 {
-    type UserRolesIterator = std::iter::Cloned<std::collections::hash_set::Iter<'a, R::Id>>;
-    type RolePermissionsIterator = std::iter::Cloned<std::collections::hash_set::Iter<'a, P::Id>>;
+    type UserRoles = std::iter::Cloned<std::collections::hash_set::Iter<'a, R::Id>>;
+    type RolePermissions = std::iter::Cloned<std::collections::hash_set::Iter<'a, P::Id>>;
     type Error = InMemoryRbacError;
 
-    fn iter_user_role_ids(self, user: &U) -> Result<Self::UserRolesIterator, Self::Error> {
+    fn iter_user_role_ids(self, user: &U) -> Result<Self::UserRoles, Self::Error> {
         match self.user_role_map.get(&user.get_rbac_id()) {
             Some(val) => Ok(val.iter().cloned()),
             None => Err(InMemoryRbacError::UserHasNoRoles),
         }
     }
 
-    fn iter_role_permission_ids(
-        self,
-        role: &R,
-    ) -> Result<Self::RolePermissionsIterator, Self::Error> {
+    fn iter_role_permission_ids(self, role: &R) -> Result<Self::RolePermissions, Self::Error> {
         match self.role_permisson_map.get(&role.get_rbac_id()) {
             Some(val) => Ok(val.iter().cloned()),
             None => Err(InMemoryRbacError::RoleHasNoPermissions),
