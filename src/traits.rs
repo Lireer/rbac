@@ -125,6 +125,33 @@ where
     fn iter_role_permission_ids(self, role: &R) -> Result<Self::RolePermissions, Self::Error>;
 }
 
+pub trait RbacStore<U, R, P>
+where
+    U: Identifiable,
+    R: Identifiable,
+    P: Identifiable,
+{
+    type Error;
+
+    /// Add a user without roles to the rbac store.
+    fn add_user(&mut self, user: &U) -> Result<bool, Self::Error>;
+    /// Remove a user from the rbac store.
+    fn remove_user(&mut self, user: &U) -> Result<bool, Self::Error>;
+    /// Add a role to a user.
+    fn add_user_role(&mut self, user: &U, role: &R) -> Result<bool, Self::Error>;
+    /// Remove a role from a user.
+    fn remove_user_role(&mut self, user: &U, role: &R) -> Result<bool, Self::Error>;
+
+    /// Add a role without permissions to the rbac store.
+    fn add_role(&mut self, role: &R) -> Result<bool, Self::Error>;
+    /// Remove a role from the rbac store and from all users with this role.
+    fn remove_role(&mut self, role: &R) -> Result<bool, Self::Error>;
+    /// Add a permission to a role.
+    fn add_role_perm(&mut self, role: &R, perm: &P) -> Result<bool, Self::Error>;
+    /// Remove a permission from a role.
+    fn remove_role_perm(&mut self, role: &R, permission: &P) -> Result<bool, Self::Error>;
+}
+
 pub trait RbacModel<U, R, P>
 where
     for<'a> &'a Self: RbacIterators<U, R, P>,
