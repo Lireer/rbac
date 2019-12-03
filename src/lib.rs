@@ -7,7 +7,7 @@ use std::collections::hash_map::Entry;
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 
-use traits::{Identifiable, RbacModel, RbacModelIterators};
+use traits::{Identifiable, RbacIterators, RbacModel};
 
 pub struct InMemoryRbac<U: Identifiable, R: Identifiable, P: Identifiable>
 where
@@ -34,7 +34,7 @@ where
     }
 }
 
-impl<'a, U, R, P> RbacModelIterators<U, R, P> for &'a InMemoryRbac<U, R, P>
+impl<'a, U, R, P> RbacIterators<U, R, P> for &'a InMemoryRbac<U, R, P>
 where
     U: Identifiable,
     U::Id: Eq + Hash,

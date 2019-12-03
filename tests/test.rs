@@ -2,7 +2,7 @@ extern crate rbac;
 
 use std::collections::HashSet;
 
-use rbac::traits::{Identifiable, RbacModel, RbacModelIterators};
+use rbac::traits::{Identifiable, RbacIterators, RbacModel};
 use rbac::*;
 
 #[derive(Debug, PartialEq, Eq, Hash)]

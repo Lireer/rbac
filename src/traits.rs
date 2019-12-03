@@ -1,5 +1,5 @@
 /// The Identifiable trait needs to be implemented for the types that are used with `RbacModel`
-/// and `RbacModelIterators`.
+/// and `RbacIterators`.
 /// # Examples
 /// Implementing Identifiable for your type:
 ///
@@ -48,7 +48,7 @@ pub trait Identifiable {
 
 /// A trait for providing methods for iterating over roles and permissions.
 /// # Example
-/// Implementing RbacModelIterators for your type:
+/// Implementing RbacIterators for your type:
 ///
 /// ```
 /// # use std::hash::Hash;
@@ -56,7 +56,7 @@ pub trait Identifiable {
 /// #
 /// # use rbac::traits::Identifiable;
 /// # use rbac::InMemoryRbacError;
-/// # use rbac::traits::RbacModelIterators;
+/// # use rbac::traits::RbacIterators;
 /// #
 /// # pub struct InMemoryRbac<U: Identifiable, R: Identifiable, P: Identifiable>
 /// # where
@@ -68,7 +68,7 @@ pub trait Identifiable {
 /// #     role_permisson_map: HashMap<R::Id, HashSet<P::Id>>,
 /// # }
 /// #
-/// impl<'a, U, R, P> RbacModelIterators<U, R, P> for &'a InMemoryRbac<U, R, P>
+/// impl<'a, U, R, P> RbacIterators<U, R, P> for &'a InMemoryRbac<U, R, P>
 /// where
 ///     U: Identifiable,
 ///     U::Id: Eq + Hash,
@@ -99,7 +99,7 @@ pub trait Identifiable {
 ///     }
 /// }
 /// ```
-pub trait RbacModelIterators<U, R, P>
+pub trait RbacIterators<U, R, P>
 where
     U: Identifiable,
     R: Identifiable,
@@ -127,7 +127,7 @@ where
 
 pub trait RbacModel<U, R, P>
 where
-    for<'a> &'a Self: RbacModelIterators<U, R, P>,
+    for<'a> &'a Self: RbacIterators<U, R, P>,
     U: Identifiable,
     R: Identifiable,
     R::Id: Eq,
