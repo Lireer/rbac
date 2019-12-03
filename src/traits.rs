@@ -131,25 +131,25 @@ where
     R: Identifiable,
     P: Identifiable,
 {
-    type Error;
+    type Outcome;
 
     /// Add a user without roles to the rbac store.
-    fn add_user(&mut self, user: &U) -> Result<bool, Self::Error>;
+    fn add_user(&mut self, user: &U) -> Self::Outcome;
     /// Remove a user from the rbac store.
-    fn remove_user(&mut self, user: &U) -> Result<bool, Self::Error>;
+    fn remove_user(&mut self, user: &U) -> Self::Outcome;
     /// Add a role to a user.
-    fn add_user_role(&mut self, user: &U, role: &R) -> Result<bool, Self::Error>;
+    fn add_user_role(&mut self, user: &U, role: &R) -> Self::Outcome;
     /// Remove a role from a user.
-    fn remove_user_role(&mut self, user: &U, role: &R) -> Result<bool, Self::Error>;
+    fn remove_user_role(&mut self, user: &U, role: &R) -> Self::Outcome;
 
     /// Add a role without permissions to the rbac store.
-    fn add_role(&mut self, role: &R) -> Result<bool, Self::Error>;
+    fn add_role(&mut self, role: &R) -> Self::Outcome;
     /// Remove a role from the rbac store and from all users with this role.
-    fn remove_role(&mut self, role: &R) -> Result<bool, Self::Error>;
+    fn remove_role(&mut self, role: &R) -> Self::Outcome;
     /// Add a permission to a role.
-    fn add_role_perm(&mut self, role: &R, perm: &P) -> Result<bool, Self::Error>;
+    fn add_role_perm(&mut self, role: &R, perm: &P) -> Self::Outcome;
     /// Remove a permission from a role.
-    fn remove_role_perm(&mut self, role: &R, permission: &P) -> Result<bool, Self::Error>;
+    fn remove_role_perm(&mut self, role: &R, permission: &P) -> Self::Outcome;
 }
 
 pub trait RbacModel<U, R, P>
